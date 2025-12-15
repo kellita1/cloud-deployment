@@ -21,6 +21,11 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+      - '--add-cloudsql-instances'
+      - 'cloud-deploy-481317:us-central1:contact-db'
+      - '--set-secrets'
+      - 'DATABASE_URL=DATABASE_URL:latest'
+      
 images:
   - 'gcr.io/$PROJECT_ID/contact-app'
 options:
