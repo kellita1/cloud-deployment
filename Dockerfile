@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "server.js"]
+CMD ["node", "server.js"]
