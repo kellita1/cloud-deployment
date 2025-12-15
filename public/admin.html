@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            max-width: 1000px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Message Admin</h1>
+        <table id="messagesTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Category</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Messages will be populated here -->
+            </tbody>
+        </table>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        // Auto-load messages on admin page
+        document.addEventListener('DOMContentLoaded', loadMessages);
+    </script>
+</body>
+
+</html>
