@@ -122,7 +122,3 @@ app.put('/messages/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update status' });
   }
 });
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
