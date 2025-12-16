@@ -3,12 +3,12 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/contact-app', '.']
   
-  # Push the container image to Container Registry
+  # Push the docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/contact-app']
   
   # Deploy to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: gcloud
     args:
       - 'run'
@@ -25,6 +25,8 @@ steps:
       - 'cloud-deploy-481317:us-central1:contact-db'
       - '--set-secrets'
       - 'DATABASE_URL=DATABASE_URL:latest'
+      - '--set-env-vars'
+      - 'NODE_ENV=production'
       
 images:
   - 'gcr.io/$PROJECT_ID/contact-app'
