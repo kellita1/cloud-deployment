@@ -76,10 +76,10 @@ app.post('/contact', async (req, res) => {
       status: 'new',
     });
 
-    res.status(201).json(contact);
+    return res.status(201).json({ success: true });
   } catch (error) {
     console.error('CONTACT ERROR:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 });
 
