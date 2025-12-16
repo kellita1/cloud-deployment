@@ -1,3 +1,5 @@
+const db = require('./models');
+const { ContactMessage } = db;
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
