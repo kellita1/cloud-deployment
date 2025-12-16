@@ -29,7 +29,7 @@ steps:
       - '--add-cloudsql-instances'
       - 'cloud-deploy-481317:us-central1:contact-db'
       - '--set-secrets'
-      - 'DATABASE_URL=projects/$PROJECT_ID/secrets/DATABASE_URL:latest'
+      - 'DATABASE_URL=DATABASE_URL:latest'
       - '--set-env-vars'
       - 'NODE_ENV=production'
 
