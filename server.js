@@ -12,6 +12,7 @@ const port = process.env.PORT || 8080;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -38,7 +39,7 @@ app.get('/health', async (req, res) => {
 });
 
 // Create Contact Message
-app.post('/contact', async (req, res) => {
+/*app.post('/contact', async (req, res) => {
   const { name, email, subject, message, category } = req.body;
 
   if (!name || !email || !subject || !message) {
@@ -55,7 +56,30 @@ app.post('/contact', async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Failed to save message' });
   }
+});*/
+
+app.post('/contact', async (req, res) => {
+  try {
+    console.log('BODY:', req.body);
+
+    const { name, email, category, subject, message } = req.body;
+
+    const contact = await ContactMessage.create({
+      name,
+      email,
+      category,
+      subject,
+      message,
+      status: 'new',
+    });
+
+    res.status(201).json(contact);
+  } catch (error) {
+    console.error('CONTACT ERROR:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
+
 
 // Get All Messages
 app.get('/messages', async (req, res) => {
