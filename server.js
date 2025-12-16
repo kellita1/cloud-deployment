@@ -5,24 +5,29 @@ const { ContactMessage } = db;
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { Pool } = require('pg');
 const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 8080;
 
+// Sync DB when starting the server
+db.sequelize.sync()
+  .then(() => {
+    console.log('Database synced');
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })
+  .catch(err => {
+    console.error('Sync error:', err);
+    process.exit(1);
+  });
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-// Database Connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
 
 // Routes
 
@@ -34,7 +39,7 @@ app.get('/admin', (req, res) => {
 // Health Check
 app.get('/health', async (req, res) => {
   try {
-    await pool.query('SELECT 1');
+    await db.sequelize.authenticate();
     res.json({ status: 'healthy', database: 'connected' });
   } catch (err) {
     res.status(500).json({ status: 'unhealthy', database: 'disconnected', error: err.message });
@@ -87,8 +92,10 @@ app.post('/contact', async (req, res) => {
 // Get All Messages
 app.get('/messages', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM contact_messages ORDER BY created_at DESC');
-    res.json(result.rows);
+    const messages = await ContactMessage.findAll({
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(messages);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch messages' });
@@ -105,16 +112,11 @@ app.put('/messages/:id', async (req, res) => {
   }
 
   try {
-    const result = await pool.query(
-      'UPDATE contact_messages SET status = $1 WHERE id = $2 RETURNING *',
-      [status, id]
-    );
+    const message = await ContactMessage.findByPk(req.params.id);
+    if (!message) return res.status(404).json({ error: 'Message not found' });
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
-
-    res.json(result.rows[0]);
+    await message.update({ status });
+    res.json(message);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to update status' });
